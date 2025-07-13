@@ -1,0 +1,39 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "mdx",
+      "camelcase": "MDX",
+      "title": "MDX",
+      "scope": "source.mdx",
+      "file-types": ["mdx"],
+      "injection-regex": "^mdx$",
+      "class-name": "TreeSitterMdx",
+      "injections": ["queries/injections.scm"]
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "Tree-sitter grammar for MDX",
+    "authors": [
+      {
+        "name": "Suhail Razzak",
+        "email": "suhail.razzak@gmail.com",
+        "url": "https://www.suhailrazzak.com/"
+      }
+    ],
+    "links": {
+      "repository": "https://www.github.com/srazzak/tree-sitter-mdx"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true,
+    "zig": false
+  }
+}
