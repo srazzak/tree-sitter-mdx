@@ -11,8 +11,7 @@ module.exports = grammar({
   name: "mdx",
 
   rules: {
-    source_file: ($) =>
-      repeat(choice($.jsx_component, $.markdown, $.expression)),
+    document: ($) => repeat(choice($.jsx_component, $.markdown, $.expression)),
 
     jsx_component: ($) =>
       seq(
