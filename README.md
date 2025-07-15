@@ -1,5 +1,8 @@
 # tree-sitter-mdx
 
+> [!NOTE]
+> This is still a WIP.
+
 MDX grammar for tree-sitter. Uses injections for Markdown, JavaScript, and JSX.
 
 - [tree-sitter-javascript](https://github.com/tree-sitter/tree-sitter-javascript) for JavaScript and JSX.
