@@ -11,39 +11,36 @@ module.exports = grammar({
   name: "mdx",
 
   rules: {
-    document: ($) => repeat(choice($.jsx_component, $.markdown, $.expression)),
+    document: ($) => repeat(choice($.jsx_element, $.markdown, $.expression)),
 
-    jsx_component: ($) =>
+    jsx_element: ($) => choice($._jsx_element, $.jsx_self_closing_element),
+
+    _jsx_element: ($) =>
       seq(
         $.jsx_opening_tag,
-        repeat($.jsx_content), // Content inside the tag
+        repeat($.text), // Content inside the tag
         $.jsx_closing_tag,
       ),
 
-    jsx_opening_tag: ($) =>
-      seq("<", field("name", $.tag_name), repeat($.attribute)),
+    jsx_self_closing_element: ($) => seq("<", field("name", $.tag_name), "/>"),
 
-    jsx_closing_tag: ($) =>
-      choice("/>", seq("</", field("name", $.tag_name), ">")),
+    jsx_opening_tag: ($) => seq("<", optional(field("name", $.tag_name)), ">"),
+
+    jsx_closing_tag: ($) => seq("</", optional(field("name", $.tag_name)), ">"),
 
     tag_name: ($) => /[A-Za-z][A-Za-z0-9]*/,
-    attribute: ($) =>
-      seq(
-        /[A-Za-z][A-Za-z0-9]*/,
-        "=",
-        /"[^"]*"/, // Quoted string value
-      ),
     jsx_content: ($) =>
       choice(
-        $.markdown,
-        $.jsx_component,
+        $.text,
+        $.jsx_element,
         $.expression, // e.g., {someVar}
       ),
 
-    expression: ($) => seq("{", /[^}]+/, "}"), // Simple placeholder for JS expressions
+    expression: ($) => seq("{", /[^}]+/, "}"),
 
     inline_jsx: ($) => seq($.jsx_opening_tag, $.jsx_closing_tag),
 
     markdown: ($) => /[^<{]+/, // Text until a '<' or '{' is encountered
+    text: ($) => /[^]+/,
   },
 });
