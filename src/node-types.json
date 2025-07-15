@@ -5,14 +5,49 @@
     "fields": {}
   },
   {
+    "type": "document",
+    "named": true,
+    "root": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "jsx_component",
+          "named": true
+        },
+        {
+          "type": "markdown",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "expression",
     "named": true,
     "fields": {}
   },
   {
-    "type": "identifier",
+    "type": "jsx_closing_tag",
     "named": true,
-    "fields": {}
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "tag_name",
+            "named": true
+          }
+        ]
+      }
+    }
   },
   {
     "type": "jsx_component",
@@ -23,15 +58,15 @@
       "required": true,
       "types": [
         {
-          "type": "attribute",
-          "named": true
-        },
-        {
-          "type": "identifier",
+          "type": "jsx_closing_tag",
           "named": true
         },
         {
           "type": "jsx_content",
+          "named": true
+        },
+        {
+          "type": "jsx_opening_tag",
           "named": true
         }
       ]
@@ -61,28 +96,35 @@
     }
   },
   {
-    "type": "source_file",
+    "type": "jsx_opening_tag",
     "named": true,
-    "root": true,
-    "fields": {},
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "tag_name",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": false,
       "types": [
         {
-          "type": "expression",
-          "named": true
-        },
-        {
-          "type": "jsx_component",
-          "named": true
-        },
-        {
-          "type": "markdown",
+          "type": "attribute",
           "named": true
         }
       ]
     }
+  },
+  {
+    "type": "tag_name",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "/>",

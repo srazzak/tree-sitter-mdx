@@ -7,5 +7,9 @@
 ((jsx_component) @injection.content
   (#set! injection.language "javascript"))
 
-((expression) @injection.content
-  (#set! injection.language "javscript"))
+(
+  (expression
+    (markdown) @injection.content
+  )
+  (#set! injection.language "javscript")
+)

@@ -15,21 +15,18 @@ module.exports = grammar({
 
     jsx_component: ($) =>
       seq(
-        "<",
-        $.identifier, // e.g., Component or div
-        repeat($.attribute), // e.g., key="value"
-        choice(
-          "/>", // Self-closing tag: <Component />
-          seq(
-            ">",
-            repeat($.jsx_content), // Content inside the tag
-            "</",
-            $.identifier, // Closing tag must match opening
-            ">",
-          ),
-        ),
+        $.jsx_opening_tag,
+        repeat($.jsx_content), // Content inside the tag
+        $.jsx_closing_tag,
       ),
-    identifier: ($) => /[A-Za-z][A-Za-z0-9]*/,
+
+    jsx_opening_tag: ($) =>
+      seq("<", field("name", $.tag_name), repeat($.attribute)),
+
+    jsx_closing_tag: ($) =>
+      choice("/>", seq("</", field("name", $.tag_name), ">")),
+
+    tag_name: ($) => /[A-Za-z][A-Za-z0-9]*/,
     attribute: ($) =>
       seq(
         /[A-Za-z][A-Za-z0-9]*/,
@@ -45,13 +42,7 @@ module.exports = grammar({
 
     expression: ($) => seq("{", /[^}]+/, "}"), // Simple placeholder for JS expressions
 
-    inline_jsx: ($) =>
-      seq(
-        "<",
-        $.identifier,
-        repeat($.attribute),
-        choice("/>", seq(">", repeat($.jsx_content), "</", $.identifier, ">")),
-      ),
+    inline_jsx: ($) => seq($.jsx_opening_tag, $.jsx_closing_tag),
 
     markdown: ($) => /[^<{]+/, // Text until a '<' or '{' is encountered
   },
