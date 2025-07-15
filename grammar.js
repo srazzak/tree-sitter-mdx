@@ -11,7 +11,7 @@ module.exports = grammar({
   name: "mdx",
 
   rules: {
-    document: ($) => repeat(choice($.jsx_element, $.markdown, $.expression)),
+    document: ($) => repeat(choice($.jsx_element, $.text, $.expression)),
 
     jsx_element: ($) => choice($._jsx_element, $.jsx_self_closing_element),
 
@@ -40,7 +40,6 @@ module.exports = grammar({
 
     inline_jsx: ($) => seq($.jsx_opening_tag, $.jsx_closing_tag),
 
-    markdown: ($) => /[^<{]+/, // Text until a '<' or '{' is encountered
     text: ($) => /[^]+/,
   },
 });
