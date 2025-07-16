@@ -1,10 +1,5 @@
 [
   {
-    "type": "attribute",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "document",
     "named": true,
     "root": true,
@@ -14,24 +9,42 @@
       "required": false,
       "types": [
         {
-          "type": "expression",
+          "type": "jsx_element",
           "named": true
         },
         {
-          "type": "jsx_component",
+          "type": "jsx_expression",
           "named": true
         },
         {
-          "type": "markdown",
+          "type": "text",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "expression",
+    "type": "jsx_child",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "jsx_element",
+          "named": true
+        },
+        {
+          "type": "jsx_expression",
+          "named": true
+        },
+        {
+          "type": "text",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "jsx_closing_tag",
@@ -42,69 +55,7 @@
         "required": false,
         "types": [
           {
-            "type": "tag_name",
-            "named": true
-          }
-        ]
-      }
-    }
-  },
-  {
-    "type": "jsx_component",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "jsx_closing_tag",
-          "named": true
-        },
-        {
-          "type": "jsx_content",
-          "named": true
-        },
-        {
-          "type": "jsx_opening_tag",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "jsx_content",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "expression",
-          "named": true
-        },
-        {
-          "type": "jsx_component",
-          "named": true
-        },
-        {
-          "type": "markdown",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "jsx_opening_tag",
-    "named": true,
-    "fields": {
-      "name": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "tag_name",
+            "type": "identifier",
             "named": true
           }
         ]
@@ -115,16 +66,95 @@
       "required": false,
       "types": [
         {
-          "type": "attribute",
+          "type": "text",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "tag_name",
+    "type": "jsx_element",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "jsx_child",
+          "named": true
+        },
+        {
+          "type": "jsx_closing_tag",
+          "named": true
+        },
+        {
+          "type": "jsx_opening_tag",
+          "named": true
+        },
+        {
+          "type": "jsx_self_closing_element",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "jsx_expression",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "jsx_opening_tag",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "text",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "jsx_self_closing_element",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "text",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "/>",
@@ -139,15 +169,15 @@
     "named": false
   },
   {
-    "type": "=",
-    "named": false
-  },
-  {
     "type": ">",
     "named": false
   },
   {
-    "type": "markdown",
+    "type": "identifier",
+    "named": true
+  },
+  {
+    "type": "text",
     "named": true
   },
   {
