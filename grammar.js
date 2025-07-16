@@ -53,6 +53,6 @@ module.exports = grammar({
 
     // inline_jsx: ($) => seq($.jsx_opening_tag, $.jsx_closing_tag),
 
-    text: ($) => /[^<{]+/,
+    text: ($) => prec.dynamic(-1, /[^<{]+/),
   },
 });
