@@ -29,24 +29,16 @@ module.exports = grammar({
       seq($.jsx_opening_tag, optional($.jsx_child), $.jsx_closing_tag),
 
     jsx_self_closing_element: ($) =>
-      seq("<", field("name", $.identifier), repeat($.text), "/>"),
+      seq("<", field("name", $.identifier), /[^/]*/, "/>"),
 
     jsx_opening_tag: ($) =>
       prec.dynamic(
         -1,
-        seq(
-          "<",
-          optional(seq(field("name", $.identifier), repeat($.text))),
-          ">",
-        ),
+        seq("<", optional(seq(field("name", $.identifier), /[^>/]*/)), ">"),
       ),
 
     jsx_closing_tag: ($) =>
-      seq(
-        "</",
-        optional(seq(field("name", $.identifier), repeat($.text))),
-        ">",
-      ),
+      seq("</", optional(seq(field("name", $.identifier), /[^>]*/)), ">"),
 
     jsx_identifier: ($) => /[a-zA-Z_$][a-zA-Z\d_$]*-[a-zA-Z\d_$\-]*/,
 
