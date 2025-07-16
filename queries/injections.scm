@@ -1,15 +1,15 @@
 ; injections.scm
 ; --------------
 
-((markdown) @injection.content
+((text) @injection.content
   (#set! injection.language "markdown"))
 
-((jsx_component) @injection.content
+((jsx_element) @injection.content
   (#set! injection.language "javascript"))
 
 (
-  (expression
-    (markdown) @injection.content
+  (jsx_expression
+    (text) @injection.content
   )
   (#set! injection.language "javscript")
 )
