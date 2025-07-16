@@ -10,4 +10,7 @@ MDX grammar for tree-sitter. Uses injections for Markdown, JavaScript, and JSX.
 
 ## Goals
 
-Overall, the goal is to extend the existing parsers for MDX - not to recreate the grammar.
+Overall, the goal is to re-use the existing parsers for MDX as much as possible. Similar to the existing Markdown
+parser, the goal of this parser is not for accuracy, but mainly for syntax highlighting in editors like neovim or Zed.
+
+So instead, we borrow most of the rules from the existing Markdown grammar and then inject JSX into the JSX blocks.
