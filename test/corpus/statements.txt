@@ -2,14 +2,16 @@
 Basic
 =====
 
-# hello
+import Heading from 'heading';
+
+# Title
 
 <Testing123 />
 
 ---
 
-(source_file
-  (markdown)
-  (jsx_component
-    (identifier))
-  (markdown))
+(document
+    (text)
+    (jsx_self_closing_element
+        (identifier))
+    (text))
