@@ -1,20 +1,54 @@
 ; injections.scm
 ; --------------
+;
+; Markdown
+; ==========
+(fenced_code_block
+  (info_string
+    (language) @injection.language)
+  (code_fence_content) @injection.content)
 
-((text) @injection.content
-  (#set! injection.language "markdown"))
+((html_block) @injection.content (#set! injection.language "html"))
 
-((jsx_element) @injection.content
-  (#set! injection.language "javascript"))
+(document . (section . (thematic_break) (_) @injection.content (thematic_break)) (#set! injection.language "yaml"))
 
-((jsx_self_closing_element) @injection.content
-  (#set! injection.language "javascript"))
+((minus_metadata) @injection.content (#set! injection.language "yaml"))
 
-((jsx_expression) @injection.content
-  (#set! injection.language "javscript"))
+((plus_metadata) @injection.content (#set! injection.language "toml"))
 
-((import_statement) @injection.content
-  (#set! injection.language "javscript"))
+((inline) @injection.content (#set! injection.language "markdown_inline"))
 
-((export_statement) @injection.content
-  (#set! injection.language "javscript"))
+; JavaScript
+; ==========
+
+; Parse the contents of tagged template literals using
+; a language inferred from the tag.
+
+(call_expression
+  function: [
+    (identifier) @injection.language
+    (member_expression
+      property: (property_identifier) @injection.language)
+  ]
+  arguments: (template_string (string_fragment) @injection.content)
+  (#set! injection.combined)
+  (#set! injection.include-children))
+
+
+; Parse regex syntax within regex literals
+
+((regex_pattern) @injection.content
+ (#set! injection.language "regex"))
+
+ ; Parse JSDoc annotations in comments
+
+((comment) @injection.content
+ (#set! injection.language "jsdoc"))
+
+; Parse Ember/Glimmer/Handlebars/HTMLBars/etc. template literals
+; e.g.: await render(hbs`<SomeComponent />`)
+(call_expression
+  function: ((identifier) @_name
+             (#eq? @_name "hbs"))
+  arguments: ((template_string) @glimmer
+              (#offset! @glimmer 0 1 0 -1)))

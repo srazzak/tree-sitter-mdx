@@ -9,7 +9,13 @@
       "file-types": ["mdx"],
       "injection-regex": "^mdx$",
       "class-name": "TreeSitterMdx",
-      "injections": ["queries/injections.scm"]
+      "injections": ["queries/injections.scm"],
+      "highlights": [
+        "queries/highlights.scm",
+        "queries/highlights-jsx.scm",
+        "queries/highlights-params.scm"
+      ],
+      "tags": ["queries/tags.scm"]
     }
   ],
   "metadata": {
@@ -19,8 +25,7 @@
     "authors": [
       {
         "name": "Suhail Razzak",
-        "email": "suhail.razzak@gmail.com",
-        "url": "https://www.suhailrazzak.com/"
+        "email": "suhail.razzak@gmail.com"
       }
     ],
     "links": {
