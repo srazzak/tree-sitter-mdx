@@ -475,7 +475,7 @@
         "required": false,
         "types": [
           {
-            "type": "inline",
+            "type": "markdown_inline",
             "named": true
           }
         ]
@@ -798,6 +798,10 @@
         },
         {
           "type": "fenced_code_block",
+          "named": true
+        },
+        {
+          "type": "html_block",
           "named": true
         },
         {
@@ -1795,6 +1799,21 @@
     }
   },
   {
+    "type": "html_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "block_continuation",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "if_statement",
     "named": true,
     "fields": {
@@ -1970,21 +1989,6 @@
         },
         {
           "type": "numeric_character_reference",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "inline",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "block_continuation",
           "named": true
         }
       ]
@@ -2465,6 +2469,10 @@
           "named": true
         },
         {
+          "type": "html_block",
+          "named": true
+        },
+        {
           "type": "indented_code_block",
           "named": true
         },
@@ -2555,6 +2563,21 @@
     "type": "list_marker_star",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "markdown_inline",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "block_continuation",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "member_expression",
@@ -2935,7 +2958,7 @@
           "named": true
         },
         {
-          "type": "inline",
+          "type": "markdown_inline",
           "named": true
         }
       ]
@@ -3158,6 +3181,10 @@
         },
         {
           "type": "fenced_code_block",
+          "named": true
+        },
+        {
+          "type": "html_block",
           "named": true
         },
         {
@@ -3891,6 +3918,10 @@
     "named": false
   },
   {
+    "type": "-->",
+    "named": false
+  },
+  {
     "type": "-=",
     "named": false
   },
@@ -3987,6 +4018,10 @@
     "named": false
   },
   {
+    "type": "?>",
+    "named": false
+  },
+  {
     "type": "??",
     "named": false
   },
@@ -4008,6 +4043,10 @@
   },
   {
     "type": "]",
+    "named": false
+  },
+  {
+    "type": "]]>",
     "named": false
   },
   {
