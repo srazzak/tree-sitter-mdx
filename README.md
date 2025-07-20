@@ -24,10 +24,10 @@ some changes to properly support MDX.
 
 This project is still a WIP, but the following is the core tasks required or done:
 
-[x] Support full JavaScript + JSX grammar rules
-[x] Support full Markdown grammar rules
-[x] Support base highlighting + injections
-[ ] Cover differences between Markdown and MDX
-[ ] Cover differences between JSX/JavaScript and MDX
-[ ] Fix highlighting issues
-[ ] Improve test coverage
+- [x] Support full JavaScript + JSX grammar rules
+- [x] Support full Markdown grammar rules
+- [x] Support base highlighting + injections
+- [ ] Cover differences between Markdown and MDX
+- [ ] Cover differences between JSX/JavaScript and MDX
+- [ ] Fix highlighting issues
+- [ ] Improve test coverage
