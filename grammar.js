@@ -442,6 +442,7 @@ module.exports = grammar({
         $.list,
         $.fenced_code_block,
         $._blank_line,
+        $.html_block,
         $.link_reference_definition,
         EXTENSION_PIPE_TABLE ? $.pipe_table : choice(),
       ),
@@ -589,7 +590,7 @@ module.exports = grammar({
         1,
         seq(
           optional($._whitespace),
-          field("heading_content", alias($._line, $.inline)),
+          field("heading_content", alias($._line, $.markdown_inline)),
         ),
       ),
 
@@ -738,6 +739,61 @@ module.exports = grammar({
         ),
       ),
 
+    // An HTML block. We do not emit addition nodes relating to the kind or structure or of the
+    // html block as this is best done using language injections and a proper html parsers.
+    //
+    // See the `build_html_block` function for more information.
+    // See the spec for the different kinds of html blocks.
+    //
+    // https://github.github.com/gfm/#html-blocks
+    html_block: ($) =>
+      prec(
+        1,
+        seq(
+          optional($._whitespace),
+          choice(
+            $._html_block_1,
+            $._html_block_2,
+            $._html_block_3,
+            $._html_block_4,
+            $._html_block_5,
+            $._html_block_6,
+            $._html_block_7,
+          ),
+        ),
+      ),
+    _html_block_1: ($) =>
+      build_html_block(
+        $,
+        // new RegExp(
+        //     '[ \t]*<' + regex_case_insensitive_list(HTML_TAG_NAMES_RULE_1) + '([\\r\\n]|[ \\t>][^<\\r\\n]*(\\n|\\r\\n?)?)'
+        // ),
+        $._html_block_1_start,
+        $._html_block_1_end,
+        true,
+      ),
+    _html_block_2: ($) =>
+      build_html_block($, $._html_block_2_start, "-->", true),
+    _html_block_3: ($) =>
+      build_html_block($, $._html_block_3_start, "?>", true),
+    _html_block_4: ($) => build_html_block($, $._html_block_4_start, ">", true),
+    _html_block_5: ($) =>
+      build_html_block($, $._html_block_5_start, "]]>", true),
+    _html_block_6: ($) =>
+      build_html_block(
+        $,
+        $._html_block_6_start,
+        seq($._newline, $._blank_line),
+        true,
+      ),
+    _html_block_7: ($) =>
+      build_html_block(
+        $,
+        $._html_block_7_start,
+        seq($._newline, $._blank_line),
+        false,
+      ),
+
     // A link reference definition. We need to make sure that this is not mistaken for a
     // paragraph or indented chunk. The `$._no_indented_chunk` token is used to tell the
     // external scanner not to allow indented chunks when the `$.link_title` of the link
@@ -800,7 +856,7 @@ module.exports = grammar({
     // https://github.github.com/gfm/#paragraphs
     paragraph: ($) =>
       seq(
-        alias(repeat1(choice($._line, $._soft_line_break)), $.inline),
+        alias(repeat1(choice($._line, $._soft_line_break)), $.markdown_inline),
         choice($._newline, $._eof),
       ),
 
@@ -2326,4 +2382,16 @@ function html_entity_regex() {
     .join("|");
   s += ");";
   return new RegExp(s);
+}
+
+// General purpose structure for html blocks. The different kinds mostly work the same but have
+// different openling and closing conditions. Some html blocks may not interrupt a paragraph and
+// have to be marked as such.
+function build_html_block($, open, close, interrupt_paragraph) {
+  return seq(
+    open,
+    repeat(choice($._line, $._newline, seq(close, $._close_block))),
+    $._block_close,
+    optional($.block_continuation),
+  );
 }

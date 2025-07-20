@@ -16,7 +16,7 @@
 
 ((plus_metadata) @injection.content (#set! injection.language "toml"))
 
-((inline) @injection.content (#set! injection.language "markdown_inline"))
+((markdown_inline) @injection.content (#set! injection.language "markdown_inline"))
 
 ; JavaScript
 ; ==========

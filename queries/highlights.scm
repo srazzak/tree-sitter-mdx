@@ -1,7 +1,7 @@
 ; Markdown
 ; ==========
 
-(atx_heading (inline) @text.title)
+(atx_heading (markdown_inline) @text.title)
 (setext_heading (paragraph) @text.title)
 
 [
