@@ -246,7 +246,6 @@ module.exports = grammar({
     [$.lexical_declaration, $.primary_expression],
     [$._setext_heading1, $._block],
     [$._setext_heading2, $._block],
-    [$.indented_code_block, $._block],
   ],
 
   conflicts: ($) => [
@@ -436,7 +435,6 @@ module.exports = grammar({
         alias($._setext_heading2, $.setext_heading),
         $.jsx_block,
         $.paragraph,
-        $.indented_code_block,
         $.block_quote,
         $.thematic_break,
         $.list,
@@ -611,17 +609,6 @@ module.exports = grammar({
         choice($._newline, $._eof),
       ),
 
-    // An indented code block. An indented code block is made up of indented chunks and blank
-    // lines. The indented chunks are handeled by the external scanner.
-    //
-    // https://github.github.com/gfm/#indented-code-blocks
-    indented_code_block: ($) =>
-      prec.right(
-        seq(
-          $._indented_chunk,
-          repeat(choice($._indented_chunk, $._blank_line)),
-        ),
-      ),
     _indented_chunk: ($) =>
       seq(
         $._indented_chunk_start,
@@ -847,8 +834,7 @@ module.exports = grammar({
     // branch.
     //
     // The other parse branch consideres the paragraph to be over. It will be killed if no valid new
-    // block is detected before the next newline. (For example it will also be killed if a indented
-    // code block is detected, which cannot interrupt paragraphs).
+    // block is detected before the next newline.
     //
     // Either way, after the next newline only one branch will exist, so the ammount of branches
     // related to paragraphs ending does not grow.

@@ -805,10 +805,6 @@
           "named": true
         },
         {
-          "type": "indented_code_block",
-          "named": true
-        },
-        {
           "type": "jsx_block",
           "named": true
         },
@@ -1953,21 +1949,6 @@
     }
   },
   {
-    "type": "indented_code_block",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "block_continuation",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "info_string",
     "named": true,
     "fields": {},
@@ -2470,10 +2451,6 @@
         },
         {
           "type": "html_block",
-          "named": true
-        },
-        {
-          "type": "indented_code_block",
           "named": true
         },
         {
@@ -3185,10 +3162,6 @@
         },
         {
           "type": "html_block",
-          "named": true
-        },
-        {
-          "type": "indented_code_block",
           "named": true
         },
         {
