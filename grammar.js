@@ -84,10 +84,8 @@ module.exports = grammar({
     $._automatic_semicolon,
     $._template_chars,
     $._ternary_qmark,
-    $.html_comment,
     "||",
-    // We use escape sequence and regex pattern to tell the scanner if we're currently inside a string or template string, in which case
-    // it should NOT parse html comments.
+    // We use escape sequence and regex pattern to tell the scanner if we're currently inside a string or template string.
     $.escape_sequence,
     $.regex_pattern,
     $.jsx_text,
@@ -150,15 +148,6 @@ module.exports = grammar({
     $._fenced_code_block_end_backtick,
     $._fenced_code_block_end_tilde,
 
-    $._html_block_1_start,
-    $._html_block_1_end,
-    $._html_block_2_start,
-    $._html_block_3_start,
-    $._html_block_4_start,
-    $._html_block_5_start,
-    $._html_block_6_start,
-    $._html_block_7_start,
-
     // Similarly this is used if the closing of a block is not decided by the external parser.
     // A `$._block_close` will be emitted at the beginning of the next line. Notice that a
     // `$._block_close` can also get emitted if the parent block closes.
@@ -182,11 +171,7 @@ module.exports = grammar({
     $._pipe_table_line_ending,
   ],
 
-  extras: ($) => [
-    $.comment,
-    $.html_comment,
-    /[\s\p{Zs}\uFEFF\u2028\u2029\u2060\u200B]/,
-  ],
+  extras: ($) => [$.comment, /[\s\p{Zs}\uFEFF\u2028\u2029\u2060\u200B]/],
 
   supertypes: ($) => [
     $.statement,
@@ -298,12 +283,6 @@ module.exports = grammar({
     _backslash_escape: ($) =>
       new RegExp("\\\\[" + PUNCTUATION_CHARACTERS_REGEX + "]"),
 
-    // HTML entity and numeric character references.
-    //
-    // The regex for entity references are build from the html_entities.json file.
-    //
-    // https://github.github.com/gfm/#entity-and-numeric-character-references
-    entity_reference: ($) => html_entity_regex(),
     numeric_character_reference: ($) => /&#([0-9]{1,7}|[xX][0-9a-fA-F]{1,6});/,
 
     link_label: ($) =>
@@ -313,8 +292,6 @@ module.exports = grammar({
           choice(
             $._text_inline_no_link,
             $.backslash_escape,
-            $.entity_reference,
-            $.numeric_character_reference,
             $._soft_line_break,
           ),
         ),
@@ -331,8 +308,6 @@ module.exports = grammar({
               $._word,
               punctuation_without($, ["<", "(", ")"]),
               $.backslash_escape,
-              $.entity_reference,
-              $.numeric_character_reference,
               $._link_destination_parenthesis,
             ),
             repeat(
@@ -340,8 +315,6 @@ module.exports = grammar({
                 $._word,
                 punctuation_without($, ["(", ")"]),
                 $.backslash_escape,
-                $.entity_reference,
-                $.numeric_character_reference,
                 $._link_destination_parenthesis,
               ),
             ),
@@ -356,8 +329,6 @@ module.exports = grammar({
             $._word,
             punctuation_without($, ["(", ")"]),
             $.backslash_escape,
-            $.entity_reference,
-            $.numeric_character_reference,
             $._link_destination_parenthesis,
           ),
         ),
@@ -373,8 +344,6 @@ module.exports = grammar({
               punctuation_without($, ['"']),
               $._whitespace,
               $.backslash_escape,
-              $.entity_reference,
-              $.numeric_character_reference,
               seq(
                 $._soft_line_break,
                 optional(seq($._soft_line_break, $._trigger_error)),
@@ -391,8 +360,6 @@ module.exports = grammar({
               punctuation_without($, ["'"]),
               $._whitespace,
               $.backslash_escape,
-              $.entity_reference,
-              $.numeric_character_reference,
               seq(
                 $._soft_line_break,
                 optional(seq($._soft_line_break, $._trigger_error)),
@@ -409,8 +376,6 @@ module.exports = grammar({
               punctuation_without($, ["(", ")"]),
               $._whitespace,
               $.backslash_escape,
-              $.entity_reference,
-              $.numeric_character_reference,
               seq(
                 $._soft_line_break,
                 optional(seq($._soft_line_break, $._trigger_error)),
@@ -440,7 +405,6 @@ module.exports = grammar({
         $.list,
         $.fenced_code_block,
         $._blank_line,
-        $.html_block,
         $.link_reference_definition,
         EXTENSION_PIPE_TABLE ? $.pipe_table : choice(),
       ),
@@ -672,43 +636,13 @@ module.exports = grammar({
     code_fence_content: ($) => repeat1(choice($._newline, $._line)),
     info_string: ($) =>
       choice(
-        seq(
-          $.language,
-          repeat(
-            choice(
-              $._line,
-              $.backslash_escape,
-              $.entity_reference,
-              $.numeric_character_reference,
-            ),
-          ),
-        ),
+        seq($.language, repeat(choice($._line, $.backslash_escape))),
         seq(
           repeat1(choice("{", "}")),
           optional(
             choice(
-              seq(
-                $.language,
-                repeat(
-                  choice(
-                    $._line,
-                    $.backslash_escape,
-                    $.entity_reference,
-                    $.numeric_character_reference,
-                  ),
-                ),
-              ),
-              seq(
-                $._whitespace,
-                repeat(
-                  choice(
-                    $._line,
-                    $.backslash_escape,
-                    $.entity_reference,
-                    $.numeric_character_reference,
-                  ),
-                ),
-              ),
+              seq($.language, repeat(choice($._line, $.backslash_escape))),
+              seq($._whitespace, repeat(choice($._line, $.backslash_escape))),
             ),
           ),
         ),
@@ -720,65 +654,8 @@ module.exports = grammar({
             $._word,
             punctuation_without($, ["{", "}", ","]),
             $.backslash_escape,
-            $.entity_reference,
-            $.numeric_character_reference,
           ),
         ),
-      ),
-
-    // An HTML block. We do not emit addition nodes relating to the kind or structure or of the
-    // html block as this is best done using language injections and a proper html parsers.
-    //
-    // See the `build_html_block` function for more information.
-    // See the spec for the different kinds of html blocks.
-    //
-    // https://github.github.com/gfm/#html-blocks
-    html_block: ($) =>
-      prec(
-        1,
-        seq(
-          optional($._whitespace),
-          choice(
-            $._html_block_1,
-            $._html_block_2,
-            $._html_block_3,
-            $._html_block_4,
-            $._html_block_5,
-            $._html_block_6,
-            $._html_block_7,
-          ),
-        ),
-      ),
-    _html_block_1: ($) =>
-      build_html_block(
-        $,
-        // new RegExp(
-        //     '[ \t]*<' + regex_case_insensitive_list(HTML_TAG_NAMES_RULE_1) + '([\\r\\n]|[ \\t>][^<\\r\\n]*(\\n|\\r\\n?)?)'
-        // ),
-        $._html_block_1_start,
-        $._html_block_1_end,
-        true,
-      ),
-    _html_block_2: ($) =>
-      build_html_block($, $._html_block_2_start, "-->", true),
-    _html_block_3: ($) =>
-      build_html_block($, $._html_block_3_start, "?>", true),
-    _html_block_4: ($) => build_html_block($, $._html_block_4_start, ">", true),
-    _html_block_5: ($) =>
-      build_html_block($, $._html_block_5_start, "]]>", true),
-    _html_block_6: ($) =>
-      build_html_block(
-        $,
-        $._html_block_6_start,
-        seq($._newline, $._blank_line),
-        true,
-      ),
-    _html_block_7: ($) =>
-      build_html_block(
-        $,
-        $._html_block_7_start,
-        seq($._newline, $._blank_line),
-        false,
       ),
 
     // A link reference definition. We need to make sure that this is not mistaken for a
@@ -2354,30 +2231,5 @@ function punctuation_without($, chars) {
   return seq(
     choice(...PUNCTUATION_CHARACTERS_ARRAY.filter((c) => !chars.includes(c))),
     optional($._last_token_punctuation),
-  );
-}
-
-// Constructs a regex that matches all html entity references.
-function html_entity_regex() {
-  // A file with all html entities, should be kept up to date with
-  // https://html.spec.whatwg.org/multipage/entities.json
-  let html_entities = require("./html_entities.json");
-  let s = "&(";
-  s += Object.keys(html_entities)
-    .map((name) => name.substring(1, name.length - 1))
-    .join("|");
-  s += ");";
-  return new RegExp(s);
-}
-
-// General purpose structure for html blocks. The different kinds mostly work the same but have
-// different openling and closing conditions. Some html blocks may not interrupt a paragraph and
-// have to be marked as such.
-function build_html_block($, open, close, interrupt_paragraph) {
-  return seq(
-    open,
-    repeat(choice($._line, $._newline, seq(close, $._close_block))),
-    $._block_close,
-    optional($.block_continuation),
   );
 }

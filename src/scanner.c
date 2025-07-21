@@ -12,7 +12,6 @@ enum TokenType {
     AUTOMATIC_SEMICOLON,
     TEMPLATE_CHARS,
     TERNARY_QMARK,
-    HTML_COMMENT,
     LOGICAL_OR,
     ESCAPE_SEQUENCE,
     REGEX_PATTERN,
@@ -48,14 +47,6 @@ enum TokenType {
     BLANK_LINE_START,
     FENCED_CODE_BLOCK_END_BACKTICK,
     FENCED_CODE_BLOCK_END_TILDE,
-    HTML_BLOCK_1_START,
-    HTML_BLOCK_1_END,
-    HTML_BLOCK_2_START,
-    HTML_BLOCK_3_START,
-    HTML_BLOCK_4_START,
-    HTML_BLOCK_5_START,
-    HTML_BLOCK_6_START,
-    HTML_BLOCK_7_START,
     CLOSE_BLOCK,
     NO_INDENTED_CHUNK,
     ERROR,
@@ -110,26 +101,6 @@ static uint8_t list_item_indentation(Block block) {
     return (uint8_t)(block - LIST_ITEM + 2);
 }
 
-#define NUM_HTML_TAG_NAMES_RULE_1 3
-
-static const char *const HTML_TAG_NAMES_RULE_1[NUM_HTML_TAG_NAMES_RULE_1] = {
-    "pre", "script", "style"};
-
-#define NUM_HTML_TAG_NAMES_RULE_7 62
-
-static const char *const HTML_TAG_NAMES_RULE_7[NUM_HTML_TAG_NAMES_RULE_7] = {
-    "address",  "article",    "aside",  "base",     "basefont", "blockquote",
-    "body",     "caption",    "center", "col",      "colgroup", "dd",
-    "details",  "dialog",     "dir",    "div",      "dl",       "dt",
-    "fieldset", "figcaption", "figure", "footer",   "form",     "frame",
-    "frameset", "h1",         "h2",     "h3",       "h4",       "h5",
-    "h6",       "head",       "header", "hr",       "html",     "iframe",
-    "legend",   "li",         "link",   "main",     "menu",     "menuitem",
-    "nav",      "noframes",   "ol",     "optgroup", "option",   "p",
-    "param",    "section",    "source", "summary",  "table",    "tbody",
-    "td",       "tfoot",      "th",     "thead",    "title",    "tr",
-    "track",    "ul"};
-
 // For explanation of the tokens see grammar.js
 static const bool paragraph_interrupt_symbols[] = {
     false, // LINE_ENDING,
@@ -162,14 +133,6 @@ static const bool paragraph_interrupt_symbols[] = {
     true,  // BLANK_LINE_START,
     false, // FENCED_CODE_BLOCK_END_BACKTICK,
     false, // FENCED_CODE_BLOCK_END_TILDE,
-    true,  // HTML_BLOCK_1_START,
-    false, // HTML_BLOCK_1_END,
-    true,  // HTML_BLOCK_2_START,
-    true,  // HTML_BLOCK_3_START,
-    true,  // HTML_BLOCK_4_START,
-    true,  // HTML_BLOCK_5_START,
-    true,  // HTML_BLOCK_6_START,
-    false, // HTML_BLOCK_7_START,
     false, // CLOSE_BLOCK,
     false, // NO_INDENTED_CHUNK,
     false, // ERROR,
@@ -472,43 +435,6 @@ static bool scan_ternary_qmark(Scanner *s, TSLexer *lexer) {
     return false;
 }
 
-static bool scan_html_comment(Scanner *s, TSLexer *lexer) {
-    while (iswspace(lexer->lookahead) || lexer->lookahead == 0x2028 || lexer->lookahead == 0x2029) {
-        skip(lexer);
-    }
-
-    const char *comment_start = "<!--";
-    const char *comment_end = "-->";
-
-    if (lexer->lookahead == '<') {
-        for (unsigned i = 0; i < 4; i++) {
-            if (lexer->lookahead != comment_start[i]) {
-                return false;
-            }
-            advance(s, lexer);
-        }
-    } else if (lexer->lookahead == '-') {
-        for (unsigned i = 0; i < 3; i++) {
-            if (lexer->lookahead != comment_end[i]) {
-                return false;
-            }
-            advance(s, lexer);
-        }
-    } else {
-        return false;
-    }
-
-    while (lexer->lookahead != 0 && lexer->lookahead != '\n' && lexer->lookahead != 0x2028 &&
-           lexer->lookahead != 0x2029) {
-        advance(s, lexer);
-    }
-
-    lexer->result_symbol = HTML_COMMENT;
-    lexer->mark_end(lexer);
-
-    return true;
-}
-
 static bool scan_jsx_text(Scanner *s, TSLexer *lexer) {
     // saw_text will be true if we see any non-whitespace content, or any whitespace content that is not a newline and
     // does not immediately follow a newline.
@@ -549,40 +475,6 @@ static bool scan_jsx_text(Scanner *s, TSLexer *lexer) {
     lexer->result_symbol = JSX_TEXT;
     return saw_text;
 }
-
-// bool tree_sitter_mdx_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
-// bool scan(Scanner *s, TSLexer *lexer, const bool *valid_symbols) {
-//     if (valid_symbols[TEMPLATE_CHARS]) {
-//         if (valid_symbols[AUTOMATIC_SEMICOLON]) {
-//             return false;
-//         }
-//         return scan_template_chars(s, lexer);
-//     }
-
-//     if (valid_symbols[JSX_TEXT] && scan_jsx_text(s, lexer)) {
-//         return true;
-//     }
-
-//     if (valid_symbols[AUTOMATIC_SEMICOLON]) {
-//         bool scanned_comment = false;
-//         bool ret = scan_automatic_semicolon(s, lexer, !valid_symbols[LOGICAL_OR], &scanned_comment);
-//         if (!ret && !scanned_comment && valid_symbols[TERNARY_QMARK] && lexer->lookahead == '?') {
-//             return scan_ternary_qmark(s, lexer);
-//         }
-//         return ret;
-//     }
-
-//     if (valid_symbols[TERNARY_QMARK]) {
-//         return scan_ternary_qmark(s, lexer);
-//     }
-
-//     if (valid_symbols[HTML_COMMENT] && !valid_symbols[LOGICAL_OR] && !valid_symbols[ESCAPE_SEQUENCE] &&
-//         !valid_symbols[REGEX_PATTERN]) {
-//         return scan_html_comment(s, lexer);
-//     }
-
-//     return false;
-// }
 
 static void push_block(Scanner *s, Block b) {
     if (s->open_blocks.size == s->open_blocks.capacity) {
@@ -1271,247 +1163,6 @@ static bool parse_minus(Scanner *s, TSLexer *lexer, const bool *valid_symbols) {
     return false;
 }
 
-static bool parse_html_block(Scanner *s, TSLexer *lexer,
-                             const bool *valid_symbols) {
-    if (!(valid_symbols[HTML_BLOCK_1_START] ||
-          valid_symbols[HTML_BLOCK_1_END] ||
-          valid_symbols[HTML_BLOCK_2_START] ||
-          valid_symbols[HTML_BLOCK_3_START] ||
-          valid_symbols[HTML_BLOCK_4_START] ||
-          valid_symbols[HTML_BLOCK_5_START] ||
-          valid_symbols[HTML_BLOCK_6_START] ||
-          valid_symbols[HTML_BLOCK_7_START])) {
-        return false;
-    }
-    advance(s, lexer);
-    if (lexer->lookahead == '?' && valid_symbols[HTML_BLOCK_3_START]) {
-        advance(s, lexer);
-        lexer->result_symbol = HTML_BLOCK_3_START;
-        if (!s->simulate)
-            push_block(s, ANONYMOUS);
-        return true;
-    }
-    if (lexer->lookahead == '!') {
-        // could be block 2
-        advance(s, lexer);
-        if (lexer->lookahead == '-') {
-            advance(s, lexer);
-            if (lexer->lookahead == '-' && valid_symbols[HTML_BLOCK_2_START]) {
-                advance(s, lexer);
-                lexer->result_symbol = HTML_BLOCK_2_START;
-                if (!s->simulate)
-                    push_block(s, ANONYMOUS);
-                return true;
-            }
-        } else if ('A' <= lexer->lookahead && lexer->lookahead <= 'Z' &&
-                   valid_symbols[HTML_BLOCK_4_START]) {
-            advance(s, lexer);
-            lexer->result_symbol = HTML_BLOCK_4_START;
-            if (!s->simulate)
-                push_block(s, ANONYMOUS);
-            return true;
-        } else if (lexer->lookahead == '[') {
-            advance(s, lexer);
-            if (lexer->lookahead == 'C') {
-                advance(s, lexer);
-                if (lexer->lookahead == 'D') {
-                    advance(s, lexer);
-                    if (lexer->lookahead == 'A') {
-                        advance(s, lexer);
-                        if (lexer->lookahead == 'T') {
-                            advance(s, lexer);
-                            if (lexer->lookahead == 'A') {
-                                advance(s, lexer);
-                                if (lexer->lookahead == '[' &&
-                                    valid_symbols[HTML_BLOCK_5_START]) {
-                                    advance(s, lexer);
-                                    lexer->result_symbol = HTML_BLOCK_5_START;
-                                    if (!s->simulate)
-                                        push_block(s, ANONYMOUS);
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    bool starting_slash = lexer->lookahead == '/';
-    if (starting_slash) {
-        advance(s, lexer);
-    }
-    char name[11];
-    size_t name_length = 0;
-    while (iswalpha((wint_t)lexer->lookahead)) {
-        if (name_length < 10) {
-            name[name_length++] = (char)towlower((wint_t)lexer->lookahead);
-        } else {
-            name_length = 12;
-        }
-        advance(s, lexer);
-    }
-    if (name_length == 0) {
-        return false;
-    }
-    bool tag_closed = false;
-    if (name_length < 11) {
-        name[name_length] = 0;
-        bool next_symbol_valid =
-            lexer->lookahead == ' ' || lexer->lookahead == '\t' ||
-            lexer->lookahead == '\n' || lexer->lookahead == '\r' ||
-            lexer->lookahead == '>';
-        if (next_symbol_valid) {
-            // try block 1 names
-            for (size_t i = 0; i < NUM_HTML_TAG_NAMES_RULE_1; i++) {
-                if (strcmp(name, HTML_TAG_NAMES_RULE_1[i]) == 0) {
-                    if (starting_slash) {
-                        if (valid_symbols[HTML_BLOCK_1_END]) {
-                            lexer->result_symbol = HTML_BLOCK_1_END;
-                            return true;
-                        }
-                    } else if (valid_symbols[HTML_BLOCK_1_START]) {
-                        lexer->result_symbol = HTML_BLOCK_1_START;
-                        if (!s->simulate)
-                            push_block(s, ANONYMOUS);
-                        return true;
-                    }
-                }
-            }
-        }
-        if (!next_symbol_valid && lexer->lookahead == '/') {
-            advance(s, lexer);
-            if (lexer->lookahead == '>') {
-                advance(s, lexer);
-                tag_closed = true;
-            }
-        }
-        if (next_symbol_valid || tag_closed) {
-            // try block 2 names
-            for (size_t i = 0; i < NUM_HTML_TAG_NAMES_RULE_7; i++) {
-                if (strcmp(name, HTML_TAG_NAMES_RULE_7[i]) == 0 &&
-                    valid_symbols[HTML_BLOCK_6_START]) {
-                    lexer->result_symbol = HTML_BLOCK_6_START;
-                    if (!s->simulate)
-                        push_block(s, ANONYMOUS);
-                    return true;
-                }
-            }
-        }
-    }
-
-    if (!valid_symbols[HTML_BLOCK_7_START]) {
-        return false;
-    }
-
-    if (!tag_closed) {
-        // tag name (continued)
-        while (iswalnum((wint_t)lexer->lookahead) || lexer->lookahead == '-') {
-            advance(s, lexer);
-        }
-        if (!starting_slash) {
-            // attributes
-            bool had_whitespace = false;
-            for (;;) {
-                // whitespace
-                while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
-                    had_whitespace = true;
-                    advance(s, lexer);
-                }
-                if (lexer->lookahead == '/') {
-                    advance(s, lexer);
-                    break;
-                }
-                if (lexer->lookahead == '>') {
-                    break;
-                }
-                // attribute name
-                if (!had_whitespace) {
-                    return false;
-                }
-                if (!iswalpha((wint_t)lexer->lookahead) &&
-                    lexer->lookahead != '_' && lexer->lookahead != ':') {
-                    return false;
-                }
-                had_whitespace = false;
-                advance(s, lexer);
-                while (iswalnum((wint_t)lexer->lookahead) ||
-                       lexer->lookahead == '_' || lexer->lookahead == '.' ||
-                       lexer->lookahead == ':' || lexer->lookahead == '-') {
-                    advance(s, lexer);
-                }
-                // attribute value specification
-                // optional whitespace
-                while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
-                    had_whitespace = true;
-                    advance(s, lexer);
-                }
-                // =
-                if (lexer->lookahead == '=') {
-                    advance(s, lexer);
-                    had_whitespace = false;
-                    // optional whitespace
-                    while (lexer->lookahead == ' ' ||
-                           lexer->lookahead == '\t') {
-                        advance(s, lexer);
-                    }
-                    // attribute value
-                    if (lexer->lookahead == '\'' || lexer->lookahead == '"') {
-                        char delimiter = (char)lexer->lookahead;
-                        advance(s, lexer);
-                        while (lexer->lookahead != delimiter &&
-                               lexer->lookahead != '\n' &&
-                               lexer->lookahead != '\r' && !lexer->eof(lexer)) {
-                            advance(s, lexer);
-                        }
-                        if (lexer->lookahead != delimiter) {
-                            return false;
-                        }
-                        advance(s, lexer);
-                    } else {
-                        // unquoted attribute value
-                        bool had_one = false;
-                        while (lexer->lookahead != ' ' &&
-                               lexer->lookahead != '\t' &&
-                               lexer->lookahead != '"' &&
-                               lexer->lookahead != '\'' &&
-                               lexer->lookahead != '=' &&
-                               lexer->lookahead != '<' &&
-                               lexer->lookahead != '>' &&
-                               lexer->lookahead != '`' &&
-                               lexer->lookahead != '\n' &&
-                               lexer->lookahead != '\r' && !lexer->eof(lexer)) {
-                            advance(s, lexer);
-                            had_one = true;
-                        }
-                        if (!had_one) {
-                            return false;
-                        }
-                    }
-                }
-            }
-        } else {
-            while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
-                advance(s, lexer);
-            }
-        }
-        if (lexer->lookahead != '>') {
-            return false;
-        }
-        advance(s, lexer);
-    }
-    while (lexer->lookahead == ' ' || lexer->lookahead == '\t') {
-        advance(s, lexer);
-    }
-    if (lexer->lookahead == '\r' || lexer->lookahead == '\n') {
-        lexer->result_symbol = HTML_BLOCK_7_START;
-        if (!s->simulate)
-            push_block(s, ANONYMOUS);
-        return true;
-    }
-    return false;
-}
-
 static bool parse_pipe_table(Scanner *s, TSLexer *lexer,
                              const bool *valid_symbols) {
 
@@ -1756,9 +1407,6 @@ static bool scan(Scanner *s, TSLexer *lexer, const bool *valid_symbols) {
                 // A minus could mark a list marker, a thematic break or a
                 // setext underline
                 return parse_minus(s, lexer, valid_symbols);
-            // case '<':
-            //     // A < could mark the beginning of a html block
-            //     return parse_html_block(s, lexer, valid_symbols);
         }
         if (lexer->lookahead != '\r' && lexer->lookahead != '\n' &&
             valid_symbols[PIPE_TABLE_START]) {
@@ -1917,11 +1565,6 @@ static bool scan(Scanner *s, TSLexer *lexer, const bool *valid_symbols) {
 
     if (valid_symbols[TERNARY_QMARK]) {
         return scan_ternary_qmark(s, lexer);
-    }
-
-    if (valid_symbols[HTML_COMMENT] && !valid_symbols[LOGICAL_OR] && !valid_symbols[ESCAPE_SEQUENCE] &&
-        !valid_symbols[REGEX_PATTERN]) {
-        return scan_html_comment(s, lexer);
     }
 
     return false;
