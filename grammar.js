@@ -398,7 +398,10 @@ module.exports = grammar({
       choice(
         alias($._setext_heading1, $.setext_heading),
         alias($._setext_heading2, $.setext_heading),
-        $.jsx_block,
+        $.import_statement,
+        $.export_statement,
+        $._jsx_element,
+        $.jsx_expression,
         $.paragraph,
         $.block_quote,
         $.thematic_break,
@@ -489,19 +492,6 @@ module.exports = grammar({
         seq(
           alias($._atx_heading6, $.atx_heading),
           repeat($._block_not_section),
-        ),
-      ),
-
-    // JSX BLOCKS
-
-    // Handle blocks of JSX or JSX expressions.
-    jsx_block: ($) =>
-      prec.right(
-        choice(
-          $.import_statement,
-          $.export_statement,
-          $.jsx_expression,
-          $._jsx_element,
         ),
       ),
 

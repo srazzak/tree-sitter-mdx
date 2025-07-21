@@ -1275,7 +1275,19 @@
         },
         {
           "type": "SYMBOL",
-          "name": "jsx_block"
+          "name": "import_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "export_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_jsx_element"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "jsx_expression"
         },
         {
           "type": "SYMBOL",
@@ -1616,31 +1628,6 @@
               "type": "SYMBOL",
               "name": "_block_not_section"
             }
-          }
-        ]
-      }
-    },
-    "jsx_block": {
-      "type": "PREC_RIGHT",
-      "value": 0,
-      "content": {
-        "type": "CHOICE",
-        "members": [
-          {
-            "type": "SYMBOL",
-            "name": "import_statement"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "export_statement"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "jsx_expression"
-          },
-          {
-            "type": "SYMBOL",
-            "name": "_jsx_element"
           }
         ]
       }

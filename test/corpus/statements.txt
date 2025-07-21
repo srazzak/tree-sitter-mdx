@@ -11,7 +11,15 @@ import Heading from 'heading';
 ---
 
 (document
-    (text)
-    (jsx_self_closing_element
-        (identifier))
-    (text))
+(section
+          (import_statement
+            (import_clause
+              (identifier))
+            (string
+              (string_fragment))))
+      (section
+        (atx_heading
+          (atx_h1_marker)
+          (markdown_inline))
+        (jsx_self_closing_element
+            (identifier))))
