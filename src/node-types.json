@@ -1958,7 +1958,15 @@
           "named": true
         },
         {
+          "type": "entity_reference",
+          "named": true
+        },
+        {
           "type": "language",
+          "named": true
+        },
+        {
+          "type": "numeric_character_reference",
           "named": true
         }
       ]
@@ -2225,6 +2233,14 @@
       "types": [
         {
           "type": "backslash_escape",
+          "named": true
+        },
+        {
+          "type": "entity_reference",
+          "named": true
+        },
+        {
+          "type": "numeric_character_reference",
           "named": true
         }
       ]
@@ -4037,11 +4053,6 @@
     "named": false
   },
   {
-    "type": "comment",
-    "named": true,
-    "extra": true
-  },
-  {
     "type": "const",
     "named": false
   },
@@ -4068,6 +4079,10 @@
   {
     "type": "else",
     "named": false
+  },
+  {
+    "type": "entity_reference",
+    "named": true
   },
   {
     "type": "escape_sequence",
@@ -4159,6 +4174,10 @@
   },
   {
     "type": "number",
+    "named": true
+  },
+  {
+    "type": "numeric_character_reference",
     "named": true
   },
   {

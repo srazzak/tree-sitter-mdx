@@ -171,7 +171,7 @@ module.exports = grammar({
     $._pipe_table_line_ending,
   ],
 
-  extras: ($) => [$.comment, /[\s\p{Zs}\uFEFF\u2028\u2029\u2060\u200B]/],
+  extras: ($) => [/[\s\p{Zs}\uFEFF\u2028\u2029\u2060\u200B]/],
 
   supertypes: ($) => [
     $.statement,
@@ -283,6 +283,12 @@ module.exports = grammar({
     _backslash_escape: ($) =>
       new RegExp("\\\\[" + PUNCTUATION_CHARACTERS_REGEX + "]"),
 
+    // HTML entity and numeric character references.
+    //
+    // The regex for entity references are build from the html_entities.json file.
+    //
+    // https://github.github.com/gfm/#entity-and-numeric-character-references
+    entity_reference: ($) => html_entity_regex(),
     numeric_character_reference: ($) => /&#([0-9]{1,7}|[xX][0-9a-fA-F]{1,6});/,
 
     link_label: ($) =>
@@ -626,13 +632,43 @@ module.exports = grammar({
     code_fence_content: ($) => repeat1(choice($._newline, $._line)),
     info_string: ($) =>
       choice(
-        seq($.language, repeat(choice($._line, $.backslash_escape))),
+        seq(
+          $.language,
+          repeat(
+            choice(
+              $._line,
+              $.backslash_escape,
+              $.entity_reference,
+              $.numeric_character_reference,
+            ),
+          ),
+        ),
         seq(
           repeat1(choice("{", "}")),
           optional(
             choice(
-              seq($.language, repeat(choice($._line, $.backslash_escape))),
-              seq($._whitespace, repeat(choice($._line, $.backslash_escape))),
+              seq(
+                $.language,
+                repeat(
+                  choice(
+                    $._line,
+                    $.backslash_escape,
+                    $.entity_reference,
+                    $.numeric_character_reference,
+                  ),
+                ),
+              ),
+              seq(
+                $._whitespace,
+                repeat(
+                  choice(
+                    $._line,
+                    $.backslash_escape,
+                    $.entity_reference,
+                    $.numeric_character_reference,
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -644,6 +680,8 @@ module.exports = grammar({
             $._word,
             punctuation_without($, ["{", "}", ","]),
             $.backslash_escape,
+            $.entity_reference,
+            $.numeric_character_reference,
           ),
         ),
       ),
@@ -1912,15 +1950,6 @@ module.exports = grammar({
         ),
       ),
 
-    // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
-    comment: (_) =>
-      token(
-        choice(
-          seq("//", /[^\r\n\u2028\u2029]*/),
-          seq("/*", /[^*]*\*+([^/*][^*]*\*+)*/, "/"),
-        ),
-      ),
-
     template_string: ($) =>
       seq(
         "`",
@@ -2222,4 +2251,17 @@ function punctuation_without($, chars) {
     choice(...PUNCTUATION_CHARACTERS_ARRAY.filter((c) => !chars.includes(c))),
     optional($._last_token_punctuation),
   );
+}
+//
+// Constructs a regex that matches all html entity references.
+function html_entity_regex() {
+  // A file with all html entities, should be kept up to date with
+  // https://html.spec.whatwg.org/multipage/entities.json
+  let html_entities = require("./html_entities.json");
+  let s = "&(";
+  s += Object.keys(html_entities)
+    .map((name) => name.substring(1, name.length - 1))
+    .join("|");
+  s += ");";
+  return new RegExp(s);
 }
