@@ -136,8 +136,6 @@
   (undefined)
 ] @constant.builtin
 
-(comment) @comment
-
 [
   (string)
   (template_string)
