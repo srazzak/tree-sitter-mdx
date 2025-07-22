@@ -15,7 +15,8 @@
         "queries/highlights-jsx.scm",
         "queries/highlights-params.scm"
       ],
-      "tags": ["queries/tags.scm"]
+      "tags": ["queries/tags.scm"],
+      "locals": "queries/locals.scm"
     }
   ],
   "metadata": {
