@@ -1,7 +1,7 @@
 # tree-sitter-mdx
 
 > [!NOTE]
-> This is still a WIP. See TODO below for what needs to be covered.
+> This is still a WIP. See Todo below for what needs to be covered.
 
 MDX grammar for tree-sitter. Re-uses the existing Markdown and JavaScript grammars.
 
@@ -24,10 +24,19 @@ some changes to properly support MDX.
 
 This project is still a WIP, but the following is the core tasks required or done:
 
+### Base
+
 - [x] Support full JavaScript + JSX grammar rules
 - [x] Support full Markdown grammar rules
-- [x] Support base highlighting + injections
-- [ ] Cover differences between Markdown and MDX
-- [ ] Cover differences between JSX/JavaScript and MDX
-- [ ] Fix highlighting issues
+
+### MDX differences
+
+- [x] Remove indented code blocks
+- [x] Remove HTML blocks
+- [x] Remove autolinks
+- [x] Remove comments (both HTML + JavaScript)
+
+### Other
+- [ ] Fix JSX identifier highlight issue
+- [ ] Fix fenced code block injection (likely due to backtick collision for fenced code block in MD vs. template literals in JS)
 - [ ] Improve test coverage
