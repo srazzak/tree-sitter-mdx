@@ -12,6 +12,8 @@ This parser should offer quite good coverage and highlighting for MDX
 files in its current state. There are still some items of work to be
 done (see To-do below).
 
+<img width="905" height="800" alt="image" src="https://github.com/user-attachments/assets/04f0ece9-451f-475c-bf67-9ce77ae001ad" />
+
 ## Goals
 
 Overall, the goal is to re-use the existing grammars as much as possible.
