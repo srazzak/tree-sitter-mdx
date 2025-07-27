@@ -2,8 +2,6 @@
   (method_definition
     name: (property_identifier) @name) @definition.method
   (#not-eq? @name "constructor")
-  (#strip! @doc "^[\\s\\*/]+|^[\\s\\*/]$")
-  (#select-adjacent! @doc @definition.method)
 )
 
 (
@@ -13,8 +11,6 @@
     (class_declaration
       name: (_) @name)
   ] @definition.class
-  (#strip! @doc "^[\\s\\*/]+|^[\\s\\*/]$")
-  (#select-adjacent! @doc @definition.class)
 )
 
 (
@@ -28,8 +24,6 @@
     (generator_function_declaration
       name: (identifier) @name)
   ] @definition.function
-  (#strip! @doc "^[\\s\\*/]+|^[\\s\\*/]$")
-  (#select-adjacent! @doc @definition.function)
 )
 
 (
@@ -37,8 +31,6 @@
     (variable_declarator
       name: (identifier) @name
       value: [(arrow_function) (function_expression)]) @definition.function)
-  (#strip! @doc "^[\\s\\*/]+|^[\\s\\*/]$")
-  (#select-adjacent! @doc @definition.function)
 )
 
 (
@@ -46,8 +38,6 @@
     (variable_declarator
       name: (identifier) @name
       value: [(arrow_function) (function_expression)]) @definition.function)
-  (#strip! @doc "^[\\s\\*/]+|^[\\s\\*/]$")
-  (#select-adjacent! @doc @definition.function)
 )
 
 (assignment_expression
