@@ -4413,10 +4413,6 @@
         ]
       }
     },
-    "hash_bang_line": {
-      "type": "PATTERN",
-      "value": "#!.*"
-    },
     "export_statement": {
       "type": "CHOICE",
       "members": [

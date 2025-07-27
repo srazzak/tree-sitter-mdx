@@ -1300,6 +1300,33 @@ static bool parse_pipe_table(Scanner *s, TSLexer *lexer,
 }
 
 static bool scan(Scanner *s, TSLexer *lexer, const bool *valid_symbols) {
+    // JavaScript ================
+    if (valid_symbols[TEMPLATE_CHARS]) {
+        if (valid_symbols[AUTOMATIC_SEMICOLON]) {
+            return false;
+        }
+        return scan_template_chars(s, lexer);
+    }
+
+    if (valid_symbols[JSX_TEXT] && scan_jsx_text(s, lexer)) {
+        return true;
+    }
+
+    if (valid_symbols[AUTOMATIC_SEMICOLON]) {
+        bool scanned_comment = false;
+        bool ret = scan_automatic_semicolon(s, lexer, !valid_symbols[LOGICAL_OR], &scanned_comment);
+        if (!ret && !scanned_comment && valid_symbols[TERNARY_QMARK] && lexer->lookahead == '?') {
+            return scan_ternary_qmark(s, lexer);
+        }
+        return ret;
+    }
+
+    if (valid_symbols[TERNARY_QMARK]) {
+        return scan_ternary_qmark(s, lexer);
+    }
+
+    // Markdown ==========
+
     // A normal tree-sitter rule decided that the current branch is invalid and
     // now "requests" an error to stop the branch
     if (valid_symbols[TRIGGER_ERROR]) {
@@ -1541,30 +1568,6 @@ static bool scan(Scanner *s, TSLexer *lexer, const bool *valid_symbols) {
             lexer->result_symbol = LINE_ENDING;
             return true;
         }
-    }
-
-    if (valid_symbols[TEMPLATE_CHARS]) {
-        if (valid_symbols[AUTOMATIC_SEMICOLON]) {
-            return false;
-        }
-        return scan_template_chars(s, lexer);
-    }
-
-    if (valid_symbols[JSX_TEXT] && scan_jsx_text(s, lexer)) {
-        return true;
-    }
-
-    if (valid_symbols[AUTOMATIC_SEMICOLON]) {
-        bool scanned_comment = false;
-        bool ret = scan_automatic_semicolon(s, lexer, !valid_symbols[LOGICAL_OR], &scanned_comment);
-        if (!ret && !scanned_comment && valid_symbols[TERNARY_QMARK] && lexer->lookahead == '?') {
-            return scan_ternary_qmark(s, lexer);
-        }
-        return ret;
-    }
-
-    if (valid_symbols[TERNARY_QMARK]) {
-        return scan_ternary_qmark(s, lexer);
     }
 
     return false;
