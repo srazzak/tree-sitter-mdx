@@ -260,8 +260,6 @@ module.exports = grammar({
   word: ($) => $.identifier,
 
   rules: {
-    // program: ($) => seq(optional($.hash_bang_line), repeat($.statement)),
-
     document: ($) =>
       seq(
         optional(
@@ -1002,9 +1000,6 @@ module.exports = grammar({
             ),
         }
       : {}),
-
-    // JAVASCRIPT
-    hash_bang_line: (_) => /#!.*/,
 
     //
     // Export declarations
