@@ -39,6 +39,5 @@ This project is still a WIP, but the following is the core tasks required or don
 - [x] Remove comments (both HTML + JavaScript)
 
 ### Other
-- [ ] Fix JSX identifier highlight issue
-- [ ] Fix fenced code block injection (likely due to backtick collision for fenced code block in MD vs. template literals in JS)
+- [x] Fix fenced code block parsing
 - [ ] Improve test coverage
