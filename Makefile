@@ -4,7 +4,7 @@ endif
 
 LANGUAGE_NAME := tree-sitter-mdx
 HOMEPAGE_URL := https://www.github.com/srazzak/tree-sitter-mdx
-VERSION := 0.1.0
+VERSION := 0.2.0
 
 # repository
 SRC_DIR := src
