@@ -1,6 +1,6 @@
-=====
+=====|||
 Basic
-=====
+=====|||
 
 import Heading from 'heading';
 
@@ -8,7 +8,7 @@ import Heading from 'heading';
 
 <Testing123 />
 
----
+---|||
 
 (document
 (section
@@ -23,3 +23,122 @@ import Heading from 'heading';
           (markdown_inline))
         (jsx_self_closing_element
             (identifier))))
+
+=======|||
+Complex
+=======|||
+
+import MyComp from './components/MyComp'
+
+export const meta = {
+  title: 'Page Title',
+  description: 'This is a page description',
+}
+
+# Hello
+
+<MyComp prop="value">
+  Component children
+</MyComp>
+
+Some *emphasis*, **importance**, and `code`.
+
+---
+
+```javascript
+console.log('!');
+```
+
+* foo
+* bar
+* baz
+
+---|||
+
+(document
+  (section
+    (import_statement
+      (import_clause
+        (identifier))
+      source: (string
+        (string_fragment)))
+    (export_statement
+      declaration: (lexical_declaration
+        (variable_declarator
+          name: (identifier)
+          value: (object
+            (pair
+              key: (property_identifier)
+              value: (string
+                (string_fragment)))
+            (pair
+              key: (property_identifier)
+              value: (string
+                (string_fragment))))))))
+  (section
+    (atx_heading
+      (atx_h1_marker)
+      heading_content: (markdown_inline))
+    (jsx_element
+      open_tag: (jsx_opening_element
+        name: (identifier)
+        attribute: (jsx_attribute
+          (property_identifier)
+          (string
+            (string_fragment))))
+      (jsx_text)
+      close_tag: (jsx_closing_element
+        name: (identifier)))
+    (paragraph
+      (markdown_inline))
+    (thematic_break)
+    (fenced_code_block
+      (fenced_code_block_delimiter)
+      (info_string
+        (language))
+      (block_continuation)
+      (code_fence_content
+        (block_continuation))
+      (fenced_code_block_delimiter))
+    (list
+      (list_item
+        (list_marker_star)
+        (paragraph
+          (markdown_inline)))
+      (list_item
+        (list_marker_star)
+        (paragraph
+          (markdown_inline)))
+      (list_item
+        (list_marker_star)
+        (paragraph
+          (markdown_inline))))))
+
+==========|||
+Code fence
+==========|||
+# Section
+
+abcd
+
+```javascript
+console.log('!');
+```
+
+---|||
+
+(document
+  (section
+    (atx_heading
+      (atx_h1_marker)
+      heading_content: (markdown_inline))
+    (paragraph
+      (markdown_inline))
+    (fenced_code_block
+      (fenced_code_block_delimiter)
+      (info_string
+        (language))
+      (block_continuation)
+      (code_fence_content
+        (block_continuation))
+      (fenced_code_block_delimiter))))
