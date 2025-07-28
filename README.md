@@ -5,7 +5,7 @@ MDX grammar for tree-sitter.
 - [tree-sitter-javascript](https://github.com/tree-sitter/tree-sitter-javascript) for JavaScript and JSX.
 - [tree-sitter-markdown](https://github.com/tree-sitter-grammars/tree-sitter-markdown) for Markdown.
 
-<img width="905" height="800" alt="image" src="https://github.com/user-attachments/assets/04f0ece9-451f-475c-bf67-9ce77ae001ad" />
+<img width="686" height="678" alt="image" src="https://github.com/user-attachments/assets/eacb17f4-ab14-4dfc-acb9-0bcd9b09fb32" />
 
 ## Goals
 
