@@ -7,7 +7,7 @@
 
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
-//
+
 const EXTENSION_DEFAULT = !process.env.NO_DEFAULT_EXTENSIONS;
 const EXTENSION_GFM =
   process.env.EXTENSION_GFM || EXTENSION_DEFAULT || process.env.ALL_EXTENSIONS;

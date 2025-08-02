@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 project(tree-sitter-mdx
-        VERSION "0.2.0"
+        VERSION "0.3.0"
         DESCRIPTION "Tree-sitter grammar for MDX"
         HOMEPAGE_URL "https://www.github.com/srazzak/tree-sitter-mdx"
         LANGUAGES C)

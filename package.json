@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-mdx",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Tree-sitter grammar for MDX",
   "repository": "https://www.github.com/srazzak/tree-sitter-mdx",
   "license": "MIT",
