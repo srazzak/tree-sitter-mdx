@@ -171,7 +171,7 @@ module.exports = grammar({
     $._pipe_table_line_ending,
   ],
 
-  extras: ($) => [/[\s\p{Zs}\uFEFF\u2028\u2029\u2060\u200B]/],
+  extras: ($) => [$.comment, /[\s\p{Zs}\uFEFF\u2028\u2029\u2060\u200B]/],
 
   supertypes: ($) => [
     $.statement,
@@ -627,7 +627,8 @@ module.exports = grammar({
           ),
         ),
       ),
-    code_fence_content: ($) => repeat1(choice($._newline, $._line)),
+    _code_fence_line: ($) => /[^\n\r]*/,
+    code_fence_content: ($) => repeat1(choice($._newline, $._code_fence_line)),
     info_string: ($) =>
       choice(
         seq(
@@ -1942,6 +1943,15 @@ module.exports = grammar({
             /u\{[0-9a-fA-F]+\}/,
             /[\r?][\n\u2028\u2029]/,
           ),
+        ),
+      ),
+
+    // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
+    comment: (_) =>
+      token(
+        choice(
+          seq("//", /[^\r\n\u2028\u2029]*/),
+          seq("/*", /[^*]*\*+([^/*][^*]*\*+)*/, "/"),
         ),
       ),
 
