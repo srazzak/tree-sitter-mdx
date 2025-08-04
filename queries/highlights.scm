@@ -136,8 +136,6 @@
   (undefined)
 ] @constant.builtin
 
-(jsx_expression) (comment) @comment)
-
 [
   (string)
   (template_string)
