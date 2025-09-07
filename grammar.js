@@ -171,7 +171,7 @@ module.exports = grammar({
     $._pipe_table_line_ending,
   ],
 
-  extras: ($) => [$.comment, /[\s\p{Zs}\uFEFF\u2028\u2029\u2060\u200B]/],
+  extras: ($) => [/[\s\p{Zs}\uFEFF\u2028\u2029\u2060\u200B]/],
 
   supertypes: ($) => [
     $.statement,
@@ -1462,7 +1462,14 @@ module.exports = grammar({
     jsx_expression: ($) =>
       seq(
         "{",
-        optional(choice($.expression, $.sequence_expression, $.spread_element)),
+        optional(
+          choice(
+            $.expression,
+            $.sequence_expression,
+            $.spread_element,
+            $.comment,
+          ),
+        ),
         "}",
       ),
 
