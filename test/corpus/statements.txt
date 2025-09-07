@@ -142,3 +142,24 @@ console.log('!');
       (code_fence_content
         (block_continuation))
       (fenced_code_block_delimiter))))
+
+============|||
+JSX comments
+============|||
+# Title
+
+{/* this is a comment */}
+
+This is a paragraph
+
+---|||
+
+(document
+    (section
+        (atx_heading
+            (atx_h1_marker)
+            heading_content: (markdown_inline))
+        (jsx_expression
+            (comment))
+        (paragraph
+            (markdown_inline))))
