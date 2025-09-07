@@ -6848,6 +6848,10 @@
                 {
                   "type": "SYMBOL",
                   "name": "spread_element"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "comment"
                 }
               ]
             },
@@ -9457,19 +9461,6 @@
             "members": [
               {
                 "type": "STRING",
-                "value": "//"
-              },
-              {
-                "type": "PATTERN",
-                "value": "[^\\r\\n\\u2028\\u2029]*"
-              }
-            ]
-          },
-          {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
                 "value": "/*"
               },
               {
@@ -10997,10 +10988,6 @@
     }
   },
   "extras": [
-    {
-      "type": "SYMBOL",
-      "name": "comment"
-    },
     {
       "type": "PATTERN",
       "value": "[\\s\\p{Zs}\\uFEFF\\u2028\\u2029\\u2060\\u200B]"

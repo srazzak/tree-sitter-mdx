@@ -2092,6 +2092,10 @@
       "required": false,
       "types": [
         {
+          "type": "comment",
+          "named": true
+        },
+        {
           "type": "expression",
           "named": true
         },
@@ -4054,8 +4058,7 @@
   },
   {
     "type": "comment",
-    "named": true,
-    "extra": true
+    "named": true
   },
   {
     "type": "const",
