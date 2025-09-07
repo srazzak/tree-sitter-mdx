@@ -1,7 +1,7 @@
 [package]
 name = "tree-sitter-mdx"
 description = "Tree-sitter grammar for MDX"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Suhail Razzak <suhail.razzak@gmail.com>"]
 license = "MIT"
 readme = "README.md"
