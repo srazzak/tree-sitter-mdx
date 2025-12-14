@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install tree-sitter CLI
+      run: |
+        wget -qO- https://github.com/tree-sitter/tree-sitter/releases/download/v0.25.6/tree-sitter-linux-x64.gz | gunzip -c - > tree-sitter
+        chmod +x tree-sitter
+        sudo mv tree-sitter /usr/local/bin/
+
+    - name: Run tree-sitter tests
+      run: tree-sitter test
