@@ -173,7 +173,11 @@ Code spans
 ============|||
 This is a regular `code` span.
 
-This is `<Component />` in a code span.
+This is open tag `<Component>` in a code span.
+
+This is self-closed tag `<Component />` in a code span.
+
+Open and close tag: `<Component>children</Component>` in a code span.
 
 Multiple components: `<A /><B /><C />`
 
@@ -183,6 +187,18 @@ With props: `<Component prop="value" />`
 
 (document
   (section
+    (paragraph
+      (markdown_inline
+        (code_span
+          (code_span_delimiter)
+          (code_span_content)
+          (code_span_delimiter))))
+    (paragraph
+      (markdown_inline
+        (code_span
+          (code_span_delimiter)
+          (code_span_content)
+          (code_span_delimiter))))
     (paragraph
       (markdown_inline
         (code_span
