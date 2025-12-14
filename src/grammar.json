@@ -87,16 +87,13 @@
                 "value": "code_span_delimiter"
               },
               {
-                "type": "REPEAT",
+                "type": "REPEAT1",
                 "content": {
                   "type": "CHOICE",
                   "members": [
                     {
-                      "type": "IMMEDIATE_TOKEN",
-                      "content": {
-                        "type": "PATTERN",
-                        "value": "[^`]+"
-                      }
+                      "type": "SYMBOL",
+                      "name": "code_span_content"
                     },
                     {
                       "type": "SYMBOL",
@@ -126,6 +123,13 @@
             "value": "code_span"
           }
         ]
+      }
+    },
+    "code_span_content": {
+      "type": "IMMEDIATE_TOKEN",
+      "content": {
+        "type": "PATTERN",
+        "value": "[^`]+"
       }
     },
     "link_label": {

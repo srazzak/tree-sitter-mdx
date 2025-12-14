@@ -698,27 +698,28 @@ static bool parse_fenced_code_block(Scanner *s, const char delimiter,
     return false;
 }
 
-static bool parse_leaf_delimiter(TSLexer *lexer, uint8_t *delimiter_length,
-                                 const bool *valid_symbols,
-                                 const char delimiter,
-                                 const enum TokenType open_token,
-                                 const enum TokenType close_token) {
+static bool parse_backtick(Scanner *s, TSLexer *lexer,
+                           const bool *valid_symbols) {
     uint8_t level = 0;
-    while (lexer->lookahead == delimiter) {
+    uint8_t *delimiter_length = &s->code_span_delimiter_length;
+
+    while (lexer->lookahead == '`') {
         lexer->advance(lexer, false);
         level++;
     }
+
     lexer->mark_end(lexer);
-    if (level == *delimiter_length && valid_symbols[close_token]) {
+
+    if (level == *delimiter_length && valid_symbols[CODE_SPAN_CLOSE]) {
         *delimiter_length = 0;
-        lexer->result_symbol = close_token;
+        lexer->result_symbol = CODE_SPAN_CLOSE;
         return true;
     }
-    if (valid_symbols[open_token]) {
+    if (valid_symbols[CODE_SPAN_START]) {
         // Parse ahead to check if there is a closing delimiter
         size_t close_level = 0;
         while (!lexer->eof(lexer)) {
-            if (lexer->lookahead == delimiter) {
+            if (lexer->lookahead == '`') {
                 close_level++;
             } else {
                 if (close_level == level) {
@@ -731,7 +732,7 @@ static bool parse_leaf_delimiter(TSLexer *lexer, uint8_t *delimiter_length,
         }
         if (close_level == level) {
             *delimiter_length = level;
-            lexer->result_symbol = open_token;
+            lexer->result_symbol = CODE_SPAN_START;
             return true;
         }
         if (valid_symbols[UNCLOSED_SPAN]) {
@@ -740,13 +741,6 @@ static bool parse_leaf_delimiter(TSLexer *lexer, uint8_t *delimiter_length,
         }
     }
     return false;
-}
-
-static bool parse_backtick(Scanner *s, TSLexer *lexer,
-                           const bool *valid_symbols) {
-    return parse_leaf_delimiter(lexer, &s->code_span_delimiter_length,
-                                valid_symbols, '`', CODE_SPAN_START,
-                                CODE_SPAN_CLOSE);
 }
 
 static bool parse_star(Scanner *s, TSLexer *lexer, const bool *valid_symbols) {

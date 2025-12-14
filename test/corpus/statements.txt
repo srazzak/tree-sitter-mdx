@@ -93,6 +93,7 @@ console.log('!');
       (markdown_inline
         (code_span
           (code_span_delimiter)
+          (code_span_content)
           (code_span_delimiter))))
     (thematic_break)
     (fenced_code_block
@@ -186,19 +187,23 @@ With props: `<Component prop="value" />`
       (markdown_inline
         (code_span
           (code_span_delimiter)
+          (code_span_content)
           (code_span_delimiter))))
     (paragraph
       (markdown_inline
         (code_span
           (code_span_delimiter)
+          (code_span_content)
           (code_span_delimiter))))
     (paragraph
       (markdown_inline
         (code_span
           (code_span_delimiter)
+          (code_span_content)
           (code_span_delimiter))))
     (paragraph
       (markdown_inline
         (code_span
           (code_span_delimiter)
+          (code_span_content)
           (code_span_delimiter))))))

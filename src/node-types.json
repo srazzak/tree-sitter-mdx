@@ -1124,6 +1124,10 @@
           "named": true
         },
         {
+          "type": "code_span_content",
+          "named": true
+        },
+        {
           "type": "code_span_delimiter",
           "named": true
         }
@@ -4086,6 +4090,10 @@
   {
     "type": "class",
     "named": false
+  },
+  {
+    "type": "code_span_content",
+    "named": true
   },
   {
     "type": "code_span_delimiter",
