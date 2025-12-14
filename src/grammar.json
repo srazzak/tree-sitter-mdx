@@ -68,6 +68,66 @@
       "type": "PATTERN",
       "value": "&#([0-9]{1,7}|[xX][0-9a-fA-F]{1,6});"
     },
+    "code_span": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "code_span_start"
+                },
+                "named": true,
+                "value": "code_span_delimiter"
+              },
+              {
+                "type": "REPEAT",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "IMMEDIATE_TOKEN",
+                      "content": {
+                        "type": "PATTERN",
+                        "value": "[^`]+"
+                      }
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "backslash_escape"
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "code_span_close"
+                },
+                "named": true,
+                "value": "code_span_delimiter"
+              }
+            ]
+          },
+          {
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_unclosed_span"
+            },
+            "named": true,
+            "value": "code_span"
+          }
+        ]
+      }
+    },
     "link_label": {
       "type": "SEQ",
       "members": [
@@ -3602,6 +3662,10 @@
                   ]
                 }
               ]
+            },
+            {
+              "type": "SYMBOL",
+              "name": "code_span"
             }
           ]
         }
@@ -11455,6 +11519,18 @@
     {
       "type": "SYMBOL",
       "name": "_pipe_table_line_ending"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "code_span_start"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "code_span_close"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_unclosed_span"
     }
   ],
   "inline": [

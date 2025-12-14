@@ -1108,6 +1108,29 @@
     }
   },
   {
+    "type": "code_span",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "backslash_escape",
+          "named": true
+        },
+        {
+          "type": "code_span",
+          "named": true
+        },
+        {
+          "type": "code_span_delimiter",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "computed_property_name",
     "named": true,
     "fields": {},
@@ -1958,6 +1981,10 @@
           "named": true
         },
         {
+          "type": "code_span",
+          "named": true
+        },
+        {
           "type": "entity_reference",
           "named": true
         },
@@ -2509,6 +2536,10 @@
       "types": [
         {
           "type": "block_continuation",
+          "named": true
+        },
+        {
+          "type": "code_span",
           "named": true
         }
       ]
@@ -4055,6 +4086,10 @@
   {
     "type": "class",
     "named": false
+  },
+  {
+    "type": "code_span_delimiter",
+    "named": true
   },
   {
     "type": "comment",
