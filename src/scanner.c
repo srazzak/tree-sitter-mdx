@@ -1,5 +1,6 @@
 #include "tree_sitter/parser.h"
 
+#include <stdint.h>
 #include <stdio.h>
 #include <assert.h>
 #include <ctype.h>
@@ -56,6 +57,9 @@ enum TokenType {
     PLUS_METADATA,
     PIPE_TABLE_START,
     PIPE_TABLE_LINE_ENDING,
+    CODE_SPAN_START,
+    CODE_SPAN_CLOSE,
+    UNCLOSED_SPAN,
 };
 
 // Description of a block on the block stack.
@@ -187,6 +191,8 @@ typedef struct {
     uint8_t column;
     // The delimiter length of the currently open fenced code block
     uint8_t fenced_code_block_delimiter_length;
+    // The delimiter length of the currently open code span
+    uint8_t code_span_delimiter_length;
 
     bool simulate;
 } Scanner;
@@ -501,6 +507,7 @@ static unsigned serialize(Scanner *s, char *buffer) {
     buffer[size++] = (char)s->indentation;
     buffer[size++] = (char)s->column;
     buffer[size++] = (char)s->fenced_code_block_delimiter_length;
+    buffer[size++] = (char)s->code_span_delimiter_length;
     size_t blocks_count = s->open_blocks.size;
     if (blocks_count > 0) {
         memcpy(&buffer[size], s->open_blocks.items,
@@ -520,6 +527,7 @@ static void deserialize(Scanner *s, const char *buffer, unsigned length) {
     s->indentation = 0;
     s->column = 0;
     s->fenced_code_block_delimiter_length = 0;
+    s->code_span_delimiter_length = 0;
     if (length > 0) {
         size_t size = 0;
         s->state = (uint8_t)buffer[size++];
@@ -527,6 +535,7 @@ static void deserialize(Scanner *s, const char *buffer, unsigned length) {
         s->indentation = (uint8_t)buffer[size++];
         s->column = (uint8_t)buffer[size++];
         s->fenced_code_block_delimiter_length = (uint8_t)buffer[size++];
+        s->code_span_delimiter_length = (uint8_t)buffer[size++];
         size_t blocks_size = length - size;
         if (blocks_size > 0) {
             size_t blocks_count = blocks_size / sizeof(Block);
@@ -683,6 +692,51 @@ static bool parse_fenced_code_block(Scanner *s, const char delimiter,
             // to decide whether a sequence of backticks can close the block.
             s->fenced_code_block_delimiter_length = level;
             s->indentation = 0;
+            return true;
+        }
+    }
+    return false;
+}
+
+static bool parse_backtick(Scanner *s, TSLexer *lexer,
+                           const bool *valid_symbols) {
+    uint8_t level = 0;
+    uint8_t *delimiter_length = &s->code_span_delimiter_length;
+
+    while (lexer->lookahead == '`') {
+        lexer->advance(lexer, false);
+        level++;
+    }
+
+    lexer->mark_end(lexer);
+
+    if (level == *delimiter_length && valid_symbols[CODE_SPAN_CLOSE]) {
+        *delimiter_length = 0;
+        lexer->result_symbol = CODE_SPAN_CLOSE;
+        return true;
+    }
+    if (valid_symbols[CODE_SPAN_START]) {
+        // Parse ahead to check if there is a closing delimiter
+        size_t close_level = 0;
+        while (!lexer->eof(lexer)) {
+            if (lexer->lookahead == '`') {
+                close_level++;
+            } else {
+                if (close_level == level) {
+                    // Found a matching delimiter
+                    break;
+                }
+                close_level = 0;
+            }
+            lexer->advance(lexer, false);
+        }
+        if (close_level == level) {
+            *delimiter_length = level;
+            lexer->result_symbol = CODE_SPAN_START;
+            return true;
+        }
+        if (valid_symbols[UNCLOSED_SPAN]) {
+            lexer->result_symbol = UNCLOSED_SPAN;
             return true;
         }
     }
@@ -1393,8 +1447,11 @@ static bool scan(Scanner *s, TSLexer *lexer, const bool *valid_symbols) {
                 break;
             case '`':
                 // A backtick could mark the beginning or ending of a fenced
-                // code block.
-                return parse_fenced_code_block(s, '`', lexer, valid_symbols);
+                // code block or an inline code span.
+                if (parse_fenced_code_block(s, '`', lexer, valid_symbols)) {
+                    return true;
+                }
+                return parse_backtick(s, lexer, valid_symbols);
             case '~':
                 // A tilde could mark the beginning or ending of a fenced code
                 // block.

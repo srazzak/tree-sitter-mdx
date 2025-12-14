@@ -11,16 +11,16 @@ import Heading from 'heading';
 ---|||
 
 (document
-(section
-          (import_statement
+    (section
+        (import_statement
             (import_clause
-              (identifier))
+                (identifier))
             (string
-              (string_fragment))))
-      (section
+                (string_fragment))))
+    (section
         (atx_heading
-          (atx_h1_marker)
-          (markdown_inline))
+            (atx_h1_marker)
+            (markdown_inline))
         (jsx_self_closing_element
             (identifier))))
 
@@ -90,7 +90,11 @@ console.log('!');
       close_tag: (jsx_closing_element
         name: (identifier)))
     (paragraph
-      (markdown_inline))
+      (markdown_inline
+        (code_span
+          (code_span_delimiter)
+          (code_span_content)
+          (code_span_delimiter))))
     (thematic_break)
     (fenced_code_block
       (fenced_code_block_delimiter)
@@ -163,3 +167,59 @@ This is a paragraph
             (comment))
         (paragraph
             (markdown_inline))))
+
+============|||
+Code spans
+============|||
+This is a regular `code` span.
+
+This is open tag `<Component>` in a code span.
+
+This is self-closed tag `<Component />` in a code span.
+
+Open and close tag: `<Component>children</Component>` in a code span.
+
+Multiple components: `<A /><B /><C />`
+
+With props: `<Component prop="value" />`
+
+---|||
+
+(document
+  (section
+    (paragraph
+      (markdown_inline
+        (code_span
+          (code_span_delimiter)
+          (code_span_content)
+          (code_span_delimiter))))
+    (paragraph
+      (markdown_inline
+        (code_span
+          (code_span_delimiter)
+          (code_span_content)
+          (code_span_delimiter))))
+    (paragraph
+      (markdown_inline
+        (code_span
+          (code_span_delimiter)
+          (code_span_content)
+          (code_span_delimiter))))
+    (paragraph
+      (markdown_inline
+        (code_span
+          (code_span_delimiter)
+          (code_span_content)
+          (code_span_delimiter))))
+    (paragraph
+      (markdown_inline
+        (code_span
+          (code_span_delimiter)
+          (code_span_content)
+          (code_span_delimiter))))
+    (paragraph
+      (markdown_inline
+        (code_span
+          (code_span_delimiter)
+          (code_span_content)
+          (code_span_delimiter))))))

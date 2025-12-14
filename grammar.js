@@ -169,6 +169,11 @@ module.exports = grammar({
 
     $._pipe_table_start,
     $._pipe_table_line_ending,
+
+    // Code spans
+    $.code_span_start,
+    $.code_span_close,
+    $._unclosed_span,
   ],
 
   extras: ($) => [/[\s\p{Zs}\uFEFF\u2028\u2029\u2060\u200B]/],
@@ -288,6 +293,23 @@ module.exports = grammar({
     // https://github.github.com/gfm/#entity-and-numeric-character-references
     entity_reference: ($) => html_entity_regex(),
     numeric_character_reference: ($) => /&#([0-9]{1,7}|[xX][0-9a-fA-F]{1,6});/,
+
+    // Code spans (inline code delimited by backticks)
+    //
+    // https://github.github.com/gfm/#code-spans
+    code_span: ($) =>
+      prec.right(
+        choice(
+          seq(
+            alias($.code_span_start, $.code_span_delimiter),
+            repeat1(choice($.code_span_content, $.backslash_escape)),
+            alias($.code_span_close, $.code_span_delimiter),
+          ),
+          alias($._unclosed_span, $.code_span),
+        ),
+      ),
+
+    code_span_content: ($) => token.immediate(/[^`]+/),
 
     link_label: ($) =>
       seq(
@@ -889,7 +911,12 @@ module.exports = grammar({
     _line: ($) =>
       prec.right(
         repeat1(
-          choice($._word, $._whitespace, punctuation_without($, ["<", "{"])),
+          choice(
+            $._word,
+            $._whitespace,
+            punctuation_without($, ["<", "{"]),
+            $.code_span,
+          ),
         ),
       ),
     _word: ($) =>
