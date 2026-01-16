@@ -6939,10 +6939,6 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "jsx_text"
-        },
-        {
-          "type": "SYMBOL",
           "name": "html_character_reference"
         },
         {
@@ -6952,6 +6948,10 @@
         {
           "type": "SYMBOL",
           "name": "jsx_expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_block"
         }
       ]
     },
@@ -11137,6 +11137,10 @@
     [
       "link_reference_definition",
       "_line"
+    ],
+    [
+      "_block_not_section",
+      "jsx_element"
     ]
   ],
   "precedences": [

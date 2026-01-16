@@ -2092,7 +2092,27 @@
       "required": false,
       "types": [
         {
+          "type": "block_continuation",
+          "named": true
+        },
+        {
+          "type": "block_quote",
+          "named": true
+        },
+        {
+          "type": "export_statement",
+          "named": true
+        },
+        {
+          "type": "fenced_code_block",
+          "named": true
+        },
+        {
           "type": "html_character_reference",
+          "named": true
+        },
+        {
+          "type": "import_statement",
           "named": true
         },
         {
@@ -2108,7 +2128,31 @@
           "named": true
         },
         {
-          "type": "jsx_text",
+          "type": "link_reference_definition",
+          "named": true
+        },
+        {
+          "type": "list",
+          "named": true
+        },
+        {
+          "type": "paragraph",
+          "named": true
+        },
+        {
+          "type": "pipe_table",
+          "named": true
+        },
+        {
+          "type": "section",
+          "named": true
+        },
+        {
+          "type": "setext_heading",
+          "named": true
+        },
+        {
+          "type": "thematic_break",
           "named": true
         }
       ]
@@ -4198,10 +4242,6 @@
   {
     "type": "instanceof",
     "named": false
-  },
-  {
-    "type": "jsx_text",
-    "named": true
   },
   {
     "type": "let",
