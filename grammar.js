@@ -260,6 +260,8 @@ module.exports = grammar({
     [$.link_reference_definition],
     [$.link_label, $._line],
     [$.link_reference_definition, $._line],
+
+    [$._block_not_section, $.jsx_element],
   ],
 
   word: ($) => $.identifier,
@@ -1502,10 +1504,10 @@ module.exports = grammar({
 
     _jsx_child: ($) =>
       choice(
-        $.jsx_text,
         $.html_character_reference,
         $._jsx_element,
         $.jsx_expression,
+        $._block,
       ),
 
     jsx_opening_element: ($) =>
