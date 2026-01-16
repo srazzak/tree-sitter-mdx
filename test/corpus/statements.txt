@@ -86,7 +86,8 @@ console.log('!');
           (property_identifier)
           (string
             (string_fragment))))
-      (jsx_text)
+      (paragraph
+        (markdown_inline))
       close_tag: (jsx_closing_element
         name: (identifier)))
     (paragraph
@@ -223,3 +224,35 @@ With props: `<Component prop="value" />`
           (code_span_delimiter)
           (code_span_content)
           (code_span_delimiter))))))
+
+============|||
+Code spans
+============|||
+
+<div>
+```rs
+fn always_true() -> bool {
+    true
+}
+```
+</div>
+
+---|||
+
+(document
+  (section
+    (jsx_element
+      open_tag: (jsx_opening_element
+        name: (identifier))
+      (fenced_code_block
+        (fenced_code_block_delimiter)
+        (info_string
+          (language))
+        (block_continuation)
+        (code_fence_content
+          (block_continuation)
+          (block_continuation)
+          (block_continuation))
+        (fenced_code_block_delimiter))
+      close_tag: (jsx_closing_element
+        name: (identifier)))))
